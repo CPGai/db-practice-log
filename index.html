@@ -520,16 +520,329 @@
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-6px); }
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 6, 10, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-container {
+      background: rgba(17, 24, 39, 0.95);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      width: 90%;
+      max-width: 550px;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      font-family: var(--font-sans);
+    }
+
+    .modal-overlay.active .modal-container {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: #fff;
+    }
+
+    /* Settings content */
+    .settings-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-group h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .pipeline-btn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .pipeline-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      color: var(--text-primary);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pipeline-btn:hover {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: var(--accent-purple);
+      transform: translateX(4px);
+    }
+
+    .pipeline-btn-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .pipeline-btn-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .pipeline-btn-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .pipeline-btn-arrow {
+      color: var(--accent-purple);
+      font-size: 1.2rem;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    /* Tag Editor */
+    .tag-editor-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      min-height: 42px;
+      align-items: center;
+    }
+
+    .editor-tag-pill {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .editor-tag-pill.hit { background: var(--tag-hit-bg); color: var(--tag-hit-text); }
+    .editor-tag-pill.race { background: var(--tag-race-bg); color: var(--tag-race-text); }
+    .editor-tag-pill.endurance { background: var(--tag-endurance-bg); color: var(--tag-endurance-text); }
+    .editor-tag-pill.tech { background: var(--tag-tech-bg); color: var(--tag-tech-text); }
+    .editor-tag-pill.recovery { background: var(--tag-recovery-bg); color: var(--tag-recovery-text); }
+
+    .editor-tag-pill .remove-tag {
+      cursor: pointer;
+      font-weight: bold;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .editor-tag-pill .remove-tag:hover {
+      opacity: 1;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.75rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.25rem;
+    }
+
+    .btn {
+      padding: 0.65rem 1.25rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font-sans);
+      border: 1px solid transparent;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--text-secondary);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent-purple);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #7c3aed;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+    }
+
+    /* Settings button styling */
+    .settings-trigger-btn {
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-trigger-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-50%) rotate(30deg);
+    }
+
+    /* Edit action button style */
+    .action-btn.edit-btn {
+      background: rgba(249, 115, 22, 0.1);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+      color: #fb923c;
+    }
+
+    .action-btn.edit-btn:hover {
+      background: rgba(249, 115, 22, 0.2);
+      border-color: #fb923c;
+    }
+
+    /* Sync button styling */
+    .sync-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .sync-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+      transform: rotate(180deg);
+    }
   </style>
 </head>
 <body>
 
-  <header>
+  <header style="position: relative;">
     <div class="logo-container">
       <span class="logo-icon">🐉</span>
       <h1>Dragon Boat Practice Logs</h1>
     </div>
     <div class="subtitle">Antigravity 2.0 Live training tracker & Tabata profile catalog</div>
+    <button id="settingsBtn" class="settings-trigger-btn" aria-label="Settings">⚙️</button>
   </header>
 
   <main>
@@ -562,7 +875,7 @@
         <!-- Sidebar Stats -->
         <div class="stats-panel">
           <div class="stat-box">
-            Sessions
+            Sessions <button id="syncBtn" class="sync-btn" title="Sync with file system">🔄</button>
             <strong id="totalSessions">0</strong>
           </div>
           <div class="stat-box">
@@ -598,6 +911,98 @@
 
     </div>
   </main>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings & Automation</h2>
+        <button class="modal-close" id="closeSettingsModal">&times;</button>
+      </div>
+      
+      <div class="settings-group">
+        <h3>Pipeline Command Launchpad</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+          Select a command to launch in a new PowerShell window in the project folder.
+        </p>
+        <div class="pipeline-btn-list">
+          <button class="pipeline-btn" data-cmd-type="standard">
+            <div class="pipeline-btn-info">
+              <span class="pipeline-btn-title">Scan, Ingest & Organize Files</span>
+              <span class="pipeline-btn-desc">Run: python pipeline.py</span>
+            </div>
+            <span class="pipeline-btn-arrow">&rarr;</span>
+          </button>
+          
+          <button class="pipeline-btn" data-cmd-type="log-only">
+            <div class="pipeline-btn-info">
+              <span class="pipeline-btn-title">Log Historical Session (Text Shorthand)</span>
+              <span class="pipeline-btn-desc">Run: python pipeline.py --log-only</span>
+            </div>
+            <span class="pipeline-btn-arrow">&rarr;</span>
+          </button>
+          
+          <button class="pipeline-btn" data-cmd-type="yes">
+            <div class="pipeline-btn-info">
+              <span class="pipeline-btn-title">Run Pipeline in Non-Interactive Mode</span>
+              <span class="pipeline-btn-desc">Run: python pipeline.py --yes</span>
+            </div>
+            <span class="pipeline-btn-arrow">&rarr;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Session Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 class="modal-title">Edit Session Log</h2>
+        <button class="modal-close" id="closeEditModal">&times;</button>
+      </div>
+      
+      <form id="editForm" onsubmit="event.preventDefault();">
+        <input type="hidden" id="editOriginalDate">
+        <input type="hidden" id="editOriginalTitle">
+        
+        <div class="form-group">
+          <label for="editDate">Date</label>
+          <input type="text" id="editDate" class="form-control" placeholder="e.g. Jul 08, 2026" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editTitle">Title</label>
+          <input type="text" id="editTitle" class="form-control" placeholder="e.g. Endurance" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="editSummary">Workout Summary</label>
+          <textarea id="editSummary" class="form-control" placeholder="e.g. 6 sets of [2' @ G6 + 2' Rest]" required></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Objective Tags</label>
+          <div class="tag-editor-container" id="editTagsContainer">
+            <!-- Tag pills will render here dynamically -->
+          </div>
+          <select id="addTagSelect" class="form-control" style="cursor: pointer;">
+            <option value="" disabled selected>Add tag...</option>
+            <option value="HIT">HIT</option>
+            <option value="Race Ready">Race Ready</option>
+            <option value="Endurance">Endurance</option>
+            <option value="Technical paddling">Technical paddling</option>
+            <option value="Recovery">Recovery</option>
+          </select>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelEditBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveEditBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script>
     let sessions = [];
@@ -753,6 +1158,8 @@
       } else {
         renderTableView(list);
       }
+      
+      attachEditEventListeners();
     }
 
     function renderCardView(list) {
@@ -776,6 +1183,8 @@
           ? `<a href="${s.tabata_path}" class="action-btn tabata" download>⏱️ Tabata JSON Profile</a>`
           : `<span class="action-btn missing">⏱️ Profile Missing</span>`;
 
+        const editAction = `<button class="action-btn edit-btn" data-date="${s.date}" data-title="${s.title}">✏️ Edit</button>`;
+
         // Format summary html highlighting structures
         let highlightedSummary = s.summary;
         highlightedSummary = highlightedSummary.replace(/(\d+\s+sets?\s+of)/gi, '<strong>$1</strong>');
@@ -793,6 +1202,7 @@
           <div class="card-actions">
             ${sheetAction}
             ${tabataAction}
+            ${editAction}
           </div>
         `;
         container.appendChild(card);
@@ -838,6 +1248,8 @@
           ? `<a href="${s.tabata_path}" class="action-btn tabata" download>⏱️ Tabata</a>`
           : `<span class="action-btn missing" style="padding:0.25rem 0.5rem; font-size:0.7rem">⏱️ N/A</span>`;
 
+        const editAction = `<button class="action-btn edit-btn" data-date="${s.date}" data-title="${s.title}" style="padding:0.25rem 0.5rem; font-size:0.7rem;">✏️ Edit</button>`;
+
         let highlightedSummary = s.summary;
         highlightedSummary = highlightedSummary.replace(/(\d+\s+sets?\s+of)/gi, '<strong>$1</strong>');
         highlightedSummary = highlightedSummary.replace(/(@\s*G\d+(\.\d+)?)/gi, '<strong style="color:var(--accent-blue)">$1</strong>');
@@ -855,6 +1267,7 @@
             <div style="display:flex; gap:0.5rem; align-items:center;">
               ${sheetAction}
               ${tabataAction}
+              ${editAction}
             </div>
           </td>
         `;
@@ -894,6 +1307,208 @@
       sortOrder = e.target.value;
       updateDashboard();
     });
+
+    // MODAL STATE & HANDLERS
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const closeSettingsModal = document.getElementById('closeSettingsModal');
+    const syncBtn = document.getElementById('syncBtn');
+    
+    const editModal = document.getElementById('editModal');
+    const closeEditModal = document.getElementById('closeEditModal');
+    const cancelEditBtn = document.getElementById('cancelEditBtn');
+    const editForm = document.getElementById('editForm');
+    
+    // Tag editor state
+    let editedTags = [];
+
+    // Open/Close Settings
+    settingsBtn.addEventListener('click', () => {
+      settingsModal.classList.add('active');
+    });
+
+    function closeSettings() {
+      settingsModal.classList.remove('active');
+      // Auto-refresh when Settings modal closes
+      syncData();
+    }
+
+    closeSettingsModal.addEventListener('click', closeSettings);
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) closeSettings();
+    });
+
+    // Run Pipeline Commands from Settings
+    document.querySelectorAll('.pipeline-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const cmdType = btn.getAttribute('data-cmd-type');
+        try {
+          btn.style.opacity = '0.5';
+          btn.style.pointerEvents = 'none';
+          const response = await fetch('/api/run-pipeline', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: cmdType })
+          });
+          const result = await response.json();
+          if (result.status === 'success') {
+            console.log(`Successfully triggered: ${result.command}`);
+          } else {
+            alert(`Error running command: ${result.message}`);
+          }
+        } catch (err) {
+          console.error('API Error:', err);
+          alert('Could not contact local API server. Make sure the server is running (python pipeline.py --server).');
+        } finally {
+          btn.style.opacity = '1';
+          btn.style.pointerEvents = 'auto';
+        }
+      });
+    });
+
+    // Manual Sync Button
+    syncBtn.addEventListener('click', syncData);
+
+    async function syncData() {
+      syncBtn.style.transform = 'rotate(360deg)';
+      setTimeout(() => {
+        syncBtn.style.transform = 'none';
+      }, 500);
+      
+      try {
+        const response = await fetch('sessions.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error('Fetch failed');
+        sessions = await response.json();
+        // Hide CORS warning banner if loaded successfully via server
+        corsBanner.style.display = 'none';
+        updateDashboard();
+        buildFilters();
+        console.log('Logs synced successfully.');
+      } catch (err) {
+        console.error('Error syncing logs:', err);
+        // If file:// protocol, show CORS banner
+        if (window.location.protocol === 'file:') {
+          corsBanner.style.display = 'block';
+        } else {
+          alert('Could not sync logs from sessions.json.');
+        }
+      }
+    }
+
+    // Edit Modal Open
+    function openEditModal(date, title) {
+      const session = sessions.find(s => s.date === date && s.title === title);
+      if (!session) return;
+      
+      document.getElementById('editOriginalDate').value = date;
+      document.getElementById('editOriginalTitle').value = title;
+      document.getElementById('editDate').value = session.date;
+      document.getElementById('editTitle').value = session.title;
+      document.getElementById('editSummary').value = session.summary;
+      
+      // Load tags
+      editedTags = session.tags ? [...session.tags] : [];
+      renderEditTags();
+      
+      editModal.classList.add('active');
+    }
+
+    function closeEdit() {
+      editModal.classList.remove('active');
+    }
+
+    closeEditModal.addEventListener('click', closeEdit);
+    cancelEditBtn.addEventListener('click', closeEdit);
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) closeEdit();
+    });
+
+    // Render tags in edit editor
+    function renderEditTags() {
+      const container = document.getElementById('editTagsContainer');
+      container.innerHTML = '';
+      
+      editedTags.forEach(tag => {
+        const cls = TAG_MAP[tag] || 'endurance';
+        const pill = document.createElement('span');
+        pill.className = `editor-tag-pill ${cls}`;
+        pill.innerHTML = `
+          ${tag}
+          <span class="remove-tag" onclick="removeEditorTag('${tag}')">&times;</span>
+        `;
+        container.appendChild(pill);
+      });
+    }
+
+    // Add tag from dropdown select
+    document.getElementById('addTagSelect').addEventListener('change', (e) => {
+      const selectedTag = e.target.value;
+      if (selectedTag && !editedTags.includes(selectedTag)) {
+        editedTags.push(selectedTag);
+        renderEditTags();
+      }
+      e.target.value = ''; // reset dropdown
+    });
+
+    // Remove tag helper
+    window.removeEditorTag = function(tag) {
+      editedTags = editedTags.filter(t => t !== tag);
+      renderEditTags();
+    };
+
+    // Save Edit Form Submit
+    editForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const original_date = document.getElementById('editOriginalDate').value;
+      const original_title = document.getElementById('editOriginalTitle').value;
+      
+      const updatedData = {
+        original_date,
+        original_title,
+        date: document.getElementById('editDate').value.trim(),
+        title: document.getElementById('editTitle').value.trim(),
+        summary: document.getElementById('editSummary').value.trim(),
+        tags: editedTags
+      };
+
+      const saveBtn = document.getElementById('saveEditBtn');
+      saveBtn.innerText = 'Saving...';
+      saveBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/sessions/edit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedData)
+        });
+        
+        const result = await response.json();
+        if (result.status === 'success') {
+          closeEdit();
+          // Sync data after edit success
+          await syncData();
+        } else {
+          alert(`Error saving session: ${result.message}`);
+        }
+      } catch (err) {
+        console.error('API Error:', err);
+        alert('Could not save to the local API server. Make sure the server is running.');
+      } finally {
+        saveBtn.innerText = 'Save Changes';
+        saveBtn.disabled = false;
+      }
+    });
+
+    function attachEditEventListeners() {
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const date = btn.getAttribute('data-date');
+          const title = btn.getAttribute('data-title');
+          openEditModal(date, title);
+        });
+      });
+    }
 
     // Run app
     init();
