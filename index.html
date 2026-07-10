@@ -362,6 +362,7 @@
       padding: 1rem;
       border-radius: 0.5rem;
       border-left: 2px solid var(--accent-blue);
+      white-space: pre-wrap;
     }
 
     .card-actions {
@@ -479,6 +480,7 @@
       border-collapse: collapse;
       text-align: left;
       font-size: 0.9rem;
+      table-layout: fixed;
     }
 
     .summary-table th, .summary-table td {
@@ -505,6 +507,8 @@
       font-size: 0.85rem;
       line-height: 1.5;
       max-width: 450px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     .summary-table .tag-container {
@@ -890,8 +894,8 @@
         
         <!-- View Switcher -->
         <div class="view-switcher" role="tablist">
-          <button class="view-btn active" id="cardViewBtn" role="tab" aria-selected="true">Grid View</button>
-          <button class="view-btn" id="tableViewBtn" role="tab" aria-selected="false">Table Summary</button>
+          <button class="view-btn" id="cardViewBtn" role="tab" aria-selected="false">Grid View</button>
+          <button class="view-btn active" id="tableViewBtn" role="tab" aria-selected="true">Table Summary</button>
         </div>
         
         <!-- CORS Warning Banner -->
@@ -1009,7 +1013,7 @@
     let activeTags = new Set();
     let searchQuery = '';
     let sortOrder = 'desc';
-    let currentView = 'card';
+    let currentView = 'table';
 
     // Elements
     const container = document.getElementById('sessionsContainer');
@@ -1219,11 +1223,11 @@
       table.innerHTML = `
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Title</th>
-            <th>Workout Summary</th>
-            <th>Tags</th>
-            <th>Associated Files</th>
+            <th style="width: 120px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 80px; width: 110px; padding-right: 8px;">Date</div></th>
+            <th style="width: 170px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 100px; width: 160px; padding-right: 8px;">Title</div></th>
+            <th><div style="resize: horizontal; overflow: auto; display: block; min-width: 250px; width: 100%; padding-right: 8px;">Workout Summary</div></th>
+            <th style="width: 230px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 120px; width: 220px; padding-right: 8px;">Tags</div></th>
+            <th style="width: 190px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 120px; width: 180px; padding-right: 8px;">Associated Files</div></th>
           </tr>
         </thead>
         <tbody>
