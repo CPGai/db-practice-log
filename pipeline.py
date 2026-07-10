@@ -37,9 +37,13 @@ def parse_xlsx(filepath):
     wb = openpyxl.load_workbook(filepath, data_only=True)
     plan_sheets = [name for name in wb.sheetnames if name.lower().startswith("plan")]
     if not plan_sheets:
-        return []
+        if len(wb.sheetnames) > 0:
+            sheetname = wb.sheetnames[0]
+        else:
+            return []
+    else:
+        sheetname = plan_sheets[0]
     
-    sheetname = plan_sheets[0]
     sheet = wb[sheetname]
     
     practices = []
@@ -54,7 +58,7 @@ def parse_xlsx(filepath):
         col7 = sheet.cell(r, 7).value
         
         c1_str = clean_str(col1)
-        is_header = c1_str.startswith("Practice:") or c1_str.startswith("Practice Plan")
+        is_header = c1_str.startswith("Practice Plan") or (c1_str.startswith("Practice") and ":" in c1_str)
         
         if is_header:
             should_merge = (
@@ -88,7 +92,7 @@ def parse_xlsx(filepath):
         if current_practice is None:
             continue
             
-        if c1_str.startswith("Practice:"):
+        if c1_str.startswith("Practice:") or (c1_str.startswith("Practice") and ":" in c1_str):
             current_practice["title"] = c1_str
             continue
             
@@ -308,8 +312,8 @@ def infer_heuristics(cycles):
 
 def clean_title(title_cell, plan_header_cell):
     # Remove prefix "Practice Plan X: " or "Practice: "
-    clean_p = re.sub(r'^practice plan\s*\d*:\s*', '', plan_header_cell, flags=re.IGNORECASE)
-    clean_t = re.sub(r'^practice:\s*', '', title_cell, flags=re.IGNORECASE)
+    clean_p = re.sub(r'^practice plan[^:]*:\s*', '', plan_header_cell, flags=re.IGNORECASE)
+    clean_t = re.sub(r'^practice[^:]*:\s*', '', title_cell, flags=re.IGNORECASE)
     return clean_p.strip(), clean_t.strip()
 
 def update_sessions_json(date, title, summary, tags, sheet_rel_path, tabata_rel_path):
