@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive high-density dashboard for Dragon Boat training calculator schedules and Tabata Timer profiles.">
+  <title>Dragon Boat Practice Workflow Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --bg-color: #080c14;
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --card-hover-bg: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(75, 85, 99, 0.3);
+      --border-hover: rgba(139, 92, 246, 0.5);
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      
+      --accent-purple: #8b5cf6;
+      --accent-blue: #3b82f6;
+      --accent-gradient: linear-gradient(135deg, #a855f7, #3b82f6);
+      --btn-gradient: linear-gradient(90deg, #8b5cf6, #3b82f6);
+      
+      --font-display: 'Outfit', sans-serif;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      
+      /* Tag Colors */
+      --tag-hit-bg: rgba(239, 68, 68, 0.15);
+      --tag-hit-text: #f87171;
+      
+      --tag-race-bg: rgba(249, 115, 22, 0.15);
+      --tag-race-text: #fb923c;
+      
+      --tag-endurance-bg: rgba(59, 130, 246, 0.15);
+      --tag-endurance-text: #60a5fa;
+      
+      --tag-tech-bg: rgba(234, 179, 8, 0.15);
+      --tag-tech-text: #fde047;
+      
+      --tag-recovery-bg: rgba(16, 185, 129, 0.15);
+      --tag-recovery-text: #34d399;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+      padding: 2.5rem 1.5rem;
+    }
+
+    header {
+      max-width: 1200px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+    }
+
+    .logo-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      font-size: 2.5rem;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      font-weight: 400;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Dashboard Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar controls */
+    .sidebar {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.75rem;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .widget-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      border-left: 3px solid var(--accent-purple);
+      padding-left: 0.5rem;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+    }
+
+    /* Filters list */
+    .filter-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      width: 100%;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.65rem 0.85rem;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    .filter-btn.active {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      color: #fff;
+    }
+
+    .tag-count {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* Sorting and controls */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .select-dropdown {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      padding: 0.75rem 1rem;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    /* Stats Panel */
+    .stats-panel {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 1.4rem;
+      font-family: var(--font-display);
+      color: var(--text-primary);
+      margin-top: 0.2rem;
+    }
+
+    /* Content Area */
+    .content-area {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .cors-error-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .cors-error-banner h3 {
+      color: var(--tag-hit-text);
+      font-family: var(--font-display);
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .cors-error-banner p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .cors-error-banner code {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.1rem 0.3rem;
+      border-radius: 0.25rem;
+      color: #fff;
+    }
+
+    /* Session List Cards */
+    .session-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      padding: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .session-card:hover {
+      background: var(--card-hover-bg);
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      gap: 1rem;
+    }
+
+    .date-badge {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      letter-spacing: 0.02em;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-top: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .tag-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .tag-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .tag-pill.hit { background: var(--tag-hit-bg); color: var(--tag-hit-text); }
+    .tag-pill.race { background: var(--tag-race-bg); color: var(--tag-race-text); }
+    .tag-pill.endurance { background: var(--tag-endurance-bg); color: var(--tag-endurance-text); }
+    .tag-pill.tech { background: var(--tag-tech-bg); color: var(--tag-tech-text); }
+    .tag-pill.recovery { background: var(--tag-recovery-bg); color: var(--tag-recovery-text); }
+
+    .summary-text {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      line-height: 1.6;
+      margin: 1.25rem 0;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border-left: 2px solid var(--accent-blue);
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1.25rem;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.55rem 1.1rem;
+      border-radius: 0.5rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .action-btn.sheet {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .action-btn.sheet:hover {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #34d399;
+    }
+
+    .action-btn.tabata {
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #a78bfa;
+    }
+
+    .action-btn.tabata:hover {
+      background: rgba(139, 92, 246, 0.2);
+      border-color: #a78bfa;
+    }
+
+    .action-btn.missing {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--card-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: 1rem;
+      color: var(--text-secondary);
+    }
+
+    .no-results-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .view-switcher {
+      display: inline-flex;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      padding: 0.25rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      align-self: flex-start;
+    }
+
+    .view-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.35rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .view-btn.active {
+      background: var(--accent-purple);
+      color: #fff;
+    }
+
+    /* Table Summary styling */
+    .table-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      overflow: hidden;
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .summary-table th, .summary-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .summary-table th {
+      background: rgba(255, 255, 255, 0.02);
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .summary-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .summary-table td.workout-summary-cell {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      max-width: 450px;
+    }
+
+    .summary-table .tag-container {
+      margin-top: 0;
+    }
+
+    .summary-table .action-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <span class="logo-icon">🐉</span>
+      <h1>Dragon Boat Practice Logs</h1>
+    </div>
+    <div class="subtitle">Antigravity 2.0 Live training tracker & Tabata profile catalog</div>
+  </header>
+
+  <main>
+    <div class="dashboard-grid">
+      
+      <!-- Sidebar Controls -->
+      <section class="sidebar" aria-label="Filters and Sorting">
+        <div class="control-group">
+          <div class="widget-title">Search</div>
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search title or summary..." aria-label="Search workouts">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="widget-title">Objective Tags</div>
+          <nav class="filter-tags" id="tagFilters" aria-label="Tag filtering">
+            <!-- Rendered via JS -->
+          </nav>
+        </div>
+
+        <div class="control-group">
+          <div class="widget-title">Timeline Sort</div>
+          <select class="select-dropdown" id="sortSelect" aria-label="Sort order">
+            <option value="desc">Newest First</option>
+            <option value="asc">Oldest First</option>
+          </select>
+        </div>
+
+        <!-- Sidebar Stats -->
+        <div class="stats-panel">
+          <div class="stat-box">
+            Sessions
+            <strong id="totalSessions">0</strong>
+          </div>
+          <div class="stat-box">
+            Archived Files
+            <strong id="totalFiles">0</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Area -->
+      <section class="content-area">
+        
+        <!-- View Switcher -->
+        <div class="view-switcher" role="tablist">
+          <button class="view-btn active" id="cardViewBtn" role="tab" aria-selected="true">Grid View</button>
+          <button class="view-btn" id="tableViewBtn" role="tab" aria-selected="false">Table Summary</button>
+        </div>
+        
+        <!-- CORS Warning Banner -->
+        <div class="cors-error-banner" id="corsBanner">
+          <h3>Local File Access Restriction (CORS)</h3>
+          <p>Browsers restrict loading local JSON files directly via <code>file://</code> URLs for security. To load database files dynamically, run a quick local server in this directory:</p>
+          <p style="margin-top: 0.5rem; font-family: monospace;">python -m http.server 8000</p>
+          <p style="margin-top: 0.25rem;">Then open: <a href="http://localhost:8000" style="color: var(--accent-blue);">http://localhost:8000</a></p>
+        </div>
+
+        <!-- Sessions Container -->
+        <div id="sessionsContainer" role="feed" aria-busy="true">
+          <!-- Session cards loaded dynamically -->
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    let sessions = [];
+    let activeTags = new Set();
+    let searchQuery = '';
+    let sortOrder = 'desc';
+    let currentView = 'card';
+
+    // Elements
+    const container = document.getElementById('sessionsContainer');
+    const searchInput = document.getElementById('searchInput');
+    const tagFiltersContainer = document.getElementById('tagFilters');
+    const sortSelect = document.getElementById('sortSelect');
+    const totalSessionsEl = document.getElementById('totalSessions');
+    const totalFilesEl = document.getElementById('totalFiles');
+    const corsBanner = document.getElementById('corsBanner');
+    
+    const cardViewBtn = document.getElementById('cardViewBtn');
+    const tableViewBtn = document.getElementById('tableViewBtn');
+
+    // Standard tag list
+    const TAG_MAP = {
+      'HIT': 'hit',
+      'Race Ready': 'race',
+      'Endurance': 'endurance',
+      'Technical paddling': 'tech',
+      'Recovery': 'recovery'
+    };
+
+    // Initialize application
+    async function init() {
+      try {
+        const response = await fetch('sessions.json');
+        if (!response.ok) {
+          throw new Error('Failed to fetch sessions.json');
+        }
+        sessions = await response.json();
+        corsBanner.style.display = 'none';
+      } catch (err) {
+        console.error('Error fetching sessions:', err);
+        // Display CORS info banner if fetched from file://
+        if (window.location.protocol === 'file:') {
+          corsBanner.style.display = 'block';
+        }
+        // Fallback mockup data in case file is absent/restricted
+        sessions = [
+          {
+            "date": "Jul 10, 2026",
+            "title": "Historical Practice (Mockup)",
+            "summary": "6 sets of [3' @ G6 + 2' Rest]",
+            "tags": ["HIT", "Recovery"],
+            "spreadsheet_path": null,
+            "tabata_path": null
+          }
+        ];
+      }
+
+      container.setAttribute('aria-busy', 'false');
+      buildFilters();
+      updateDashboard();
+    }
+
+    // Dynamic Filter buttons list builder
+    function buildFilters() {
+      tagFiltersContainer.innerHTML = '';
+      
+      // Calculate tag counts from data
+      const counts = {};
+      Object.keys(TAG_MAP).forEach(k => counts[k] = 0);
+      
+      sessions.forEach(s => {
+        if (s.tags) {
+          s.tags.forEach(t => {
+            if (counts[t] !== undefined) counts[t]++;
+          });
+        }
+      });
+
+      Object.entries(TAG_MAP).forEach(([label, classSuffix]) => {
+        const btn = document.createElement('button');
+        btn.className = `filter-btn ${activeTags.has(label) ? 'active' : ''}`;
+        btn.setAttribute('aria-pressed', activeTags.has(label) ? 'true' : 'false');
+        btn.innerHTML = `
+          <span>${label}</span>
+          <span class="tag-count">${counts[label] || 0}</span>
+        `;
+        btn.addEventListener('click', () => toggleTagFilter(label));
+        tagFiltersContainer.appendChild(btn);
+      });
+    }
+
+    function toggleTagFilter(tag) {
+      if (activeTags.has(tag)) {
+        activeTags.delete(tag);
+      } else {
+        activeTags.add(tag);
+      }
+      buildFilters();
+      updateDashboard();
+    }
+
+    // Filter & sort logic
+    function updateDashboard() {
+      // 1. Filter
+      let filtered = sessions.filter(s => {
+        const matchesSearch = 
+          s.title.toLowerCase().includes(searchQuery) || 
+          s.summary.toLowerCase().includes(searchQuery) ||
+          (s.date && s.date.toLowerCase().includes(searchQuery));
+          
+        const matchesTags = 
+          activeTags.size === 0 || 
+          (s.tags && s.tags.some(t => activeTags.has(t)));
+          
+        return matchesSearch && matchesTags;
+      });
+
+      // 2. Sort
+      filtered.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+      });
+
+      // 3. Render
+      renderSessions(filtered);
+      
+      // 4. Update Stats
+      totalSessionsEl.textContent = sessions.length;
+      const totalFiles = sessions.reduce((acc, curr) => {
+        if (curr.spreadsheet_path) acc++;
+        if (curr.tabata_path) acc++;
+        return acc;
+      }, 0);
+      totalFilesEl.textContent = totalFiles;
+    }
+
+    function renderSessions(list) {
+      container.innerHTML = '';
+      
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="no-results">
+            <span class="no-results-icon">🔍</span>
+            <p>No practices match the active filters or search queries.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (currentView === 'card') {
+        renderCardView(list);
+      } else {
+        renderTableView(list);
+      }
+    }
+
+    function renderCardView(list) {
+      list.forEach(s => {
+        const card = document.createElement('article');
+        card.className = 'session-card';
+        
+        // Tags pills list
+        const tagsHtml = s.tags ? s.tags.map(t => {
+          const cls = TAG_MAP[t] || 'endurance';
+          return `<span class="tag-pill ${cls}">${t}</span>`;
+        }).join('') : '';
+
+        // Spreadsheet action link
+        const sheetAction = s.spreadsheet_path 
+          ? `<a href="${s.spreadsheet_path}" class="action-btn sheet" download>📊 Excel Calculator</a>`
+          : `<span class="action-btn missing">📊 Spreadsheet Missing</span>`;
+
+        // Tabata action link
+        const tabataAction = s.tabata_path
+          ? `<a href="${s.tabata_path}" class="action-btn tabata" download>⏱️ Tabata JSON Profile</a>`
+          : `<span class="action-btn missing">⏱️ Profile Missing</span>`;
+
+        // Format summary html highlighting structures
+        let highlightedSummary = s.summary;
+        highlightedSummary = highlightedSummary.replace(/(\d+\s+sets?\s+of)/gi, '<strong>$1</strong>');
+        highlightedSummary = highlightedSummary.replace(/(@\s*G\d+(\.\d+)?)/gi, '<strong style="color:var(--accent-blue)">$1</strong>');
+
+        card.innerHTML = `
+          <div class="card-header">
+            <div>
+              <span class="date-badge">${s.date}</span>
+              <h2 class="card-title">${s.title}</h2>
+              <div class="tag-container">${tagsHtml}</div>
+            </div>
+          </div>
+          <div class="summary-text">${highlightedSummary}</div>
+          <div class="card-actions">
+            ${sheetAction}
+            ${tabataAction}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderTableView(list) {
+      const tableWrapper = document.createElement('div');
+      tableWrapper.className = 'table-container';
+      
+      const table = document.createElement('table');
+      table.className = 'summary-table';
+      
+      table.innerHTML = `
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Workout Summary</th>
+            <th>Tags</th>
+            <th>Associated Files</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      `;
+      
+      const tbody = table.querySelector('tbody');
+      
+      list.forEach(s => {
+        const tr = document.createElement('tr');
+        
+        const tagsHtml = s.tags ? s.tags.map(t => {
+          const cls = TAG_MAP[t] || 'endurance';
+          return `<span class="tag-pill ${cls}">${t}</span>`;
+        }).join(' ') : '';
+
+        const sheetAction = s.spreadsheet_path 
+          ? `<a href="${s.spreadsheet_path}" class="action-btn sheet" download>📊 Excel</a>`
+          : `<span class="action-btn missing" style="padding:0.25rem 0.5rem; font-size:0.7rem">📊 N/A</span>`;
+
+        const tabataAction = s.tabata_path
+          ? `<a href="${s.tabata_path}" class="action-btn tabata" download>⏱️ Tabata</a>`
+          : `<span class="action-btn missing" style="padding:0.25rem 0.5rem; font-size:0.7rem">⏱️ N/A</span>`;
+
+        let highlightedSummary = s.summary;
+        highlightedSummary = highlightedSummary.replace(/(\d+\s+sets?\s+of)/gi, '<strong>$1</strong>');
+        highlightedSummary = highlightedSummary.replace(/(@\s*G\d+(\.\d+)?)/gi, '<strong style="color:var(--accent-blue)">$1</strong>');
+
+        tr.innerHTML = `
+          <td style="font-family:var(--font-display); font-weight:700; white-space:nowrap;">${s.date}</td>
+          <td style="font-family:var(--font-display); font-weight:700; white-space:nowrap;">${s.title}</td>
+          <td class="workout-summary-cell">${highlightedSummary}</td>
+          <td>
+            <div class="tag-container" style="display:flex; flex-wrap:wrap; gap:0.25rem;">
+              ${tagsHtml}
+            </div>
+          </td>
+          <td>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+              ${sheetAction}
+              ${tabataAction}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      
+      tableWrapper.appendChild(table);
+      container.appendChild(tableWrapper);
+    }
+
+    // View Switcher Handlers
+    cardViewBtn.addEventListener('click', () => {
+      currentView = 'card';
+      cardViewBtn.classList.add('active');
+      cardViewBtn.setAttribute('aria-selected', 'true');
+      tableViewBtn.classList.remove('active');
+      tableViewBtn.setAttribute('aria-selected', 'false');
+      updateDashboard();
+    });
+
+    tableViewBtn.addEventListener('click', () => {
+      currentView = 'table';
+      tableViewBtn.classList.add('active');
+      tableViewBtn.setAttribute('aria-selected', 'true');
+      cardViewBtn.classList.remove('active');
+      cardViewBtn.setAttribute('aria-selected', 'false');
+      updateDashboard();
+    });
+
+    // Input Event Listeners
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim ? e.target.value.toLowerCase().trim() : e.target.value.toLowerCase();
+      updateDashboard();
+    });
+
+    sortSelect.addEventListener('change', (e) => {
+      sortOrder = e.target.value;
+      updateDashboard();
+    });
+
+    // Run app
+    init();
+  </script>
+</body>
+</html>

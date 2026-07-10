@@ -1,0 +1,113 @@
+[
+  {
+    "date": "Jul 08, 2026",
+    "title": "Endurance",
+    "summary": "6 sets of [2' @ G6 + 2' 30\" Rest + 4' @ G5 + 3' Rest] + 2' Rest + 1' @ G8 200m-Race",
+    "tags": [
+      "HIT",
+      "Race Ready",
+      "Endurance",
+      "Technical paddling"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Jul 08, 2026 - Endurance.xlsx",
+    "tabata_path": "02-App_Timers_JSON/Jul 08, 2026 - Endurance.tabata"
+  },
+  {
+    "date": "Jul 06, 2026",
+    "title": "The Over-Under",
+    "summary": "7' @ G4 + 3' Rest + 7' Starts Drill + 3' Rest + 6 sets of [3' @ G6 + 1' @ G7 + 1' @ G5 + 4' 30\" Rest] + 0' 4\" Rest + 8 sets of [0' 20\" @ G10 + 0' 10\" Rest] + 10' Rest + 5' @ G0",
+    "tags": [
+      "HIT",
+      "Race Ready",
+      "Endurance",
+      "Technical paddling",
+      "Recovery"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Jul 06, 2026 - The Over-Under.xlsx",
+    "tabata_path": "02-App_Timers_JSON/Jul 06, 2026 - The Over-Under.tabata"
+  },
+  {
+    "date": "Jul 06, 2026",
+    "title": "Alternate Performance (Small boat)",
+    "summary": "5' @ G4 + 2' Rest + 30' Starts Drills + 2' Rest + 2 sets of [5' @ G4 + 2' Rest] + 12' + 2' Rest + 3 sets of [5' @ G4 + 2' Rest] + 1' @ G4",
+    "tags": [
+      "Race Ready",
+      "Endurance",
+      "Technical paddling"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Jul 06, 2026 - Alternate Performance (Small boat).xlsx",
+    "tabata_path": null
+  },
+  {
+    "date": "Jul 06, 2026",
+    "title": "Alternate Long Paddle G4",
+    "summary": "5' @ G4 + 7' Drills + 3' Rest + 5 sets of [9' @ G4 + 4' 30\" Rest] + 5' @ G4",
+    "tags": [
+      "Endurance",
+      "Technical paddling"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Jul 06, 2026 - Alternate Long Paddle G4.xlsx",
+    "tabata_path": null
+  },
+  {
+    "date": "Mar 02, 2026",
+    "title": "The Wrong side, Exit Technical Focus",
+    "summary": "5' @ G0 + 8' Drills + 1' Rest + 4 sets of [4' @ G5 + 3' Rest + 2' @ G6 + 2' Rest] + 1' Rest + 1' @ G8 + 1' @ G5 + 4' Rest + 5' @ G0",
+    "tags": [
+      "HIT",
+      "Race Ready",
+      "Endurance",
+      "Technical paddling",
+      "Recovery"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Mar 02, 2026 - The Wrond side-Exit.xlsx",
+    "tabata_path": "02-App_Timers_JSON/Mar 02, 2026 - The Wrond side-Exit.tabata"
+  },
+  {
+    "date": "Mar 02, 2026",
+    "title": "FullB-9minTran",
+    "summary": "6' @ G0 + 4' Rest + 5 sets of [0' 20\" @ G1 + 0' 30\" @ G4 + 8' 30\" Tran2G0 -Set x - 5 + 4' 30\" Rest] + 5 sets of [9' 30\" 9.5'Start/3sTranG0 + 4' 30\" Rest] + 1' @ G5 + 4' Rest + 6' @ G0",
+    "tags": [
+      "Race Ready",
+      "Endurance",
+      "Recovery"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Mar 02, 2026 - FullB-9minTran.xlsx",
+    "tabata_path": null
+  },
+  {
+    "date": "Mar 02, 2026",
+    "title": "Endurance",
+    "summary": "5 sets of [0' 20\" @ G1 + 0' 30\" @ G4 + 8' 30\" Tran2G0 -Set x - 5 + 4' 30\" Rest] + 5 sets of [9' 30\" 9.5'Start/3sTranG0 + 4' 30\" Rest] + 1' @ G5 + 4' Rest",
+    "tags": [
+      "Endurance",
+      "Technical paddling"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Mar 02, 2026 - Endurance.xlsx",
+    "tabata_path": "02-App_Timers_JSON/Mar 02, 2026 - Endurance.tabata"
+  },
+  {
+    "date": "Mar 02, 2026",
+    "title": "The Wrond side-Exit",
+    "summary": "5' @ G0 + 8' Drills + 1' Rest + 4 sets of [4' @ G5 + 3' Rest + 2' @ G6 + 2' Rest] + 1' Rest + 1' @ G8 + 1' @ G5 + 4' Rest + 5' @ G0",
+    "tags": [
+      "HIT",
+      "Race Ready",
+      "Endurance",
+      "Technical paddling",
+      "Recovery"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Mar 02, 2026 - The Wrond side-Exit.xlsx",
+    "tabata_path": null
+  },
+  {
+    "date": "Dec 20, 2025",
+    "title": "Saturday-morning technical",
+    "summary": "3x 3' on 3' off Gear 5 + 2x (1'on30\" off gear5, 1'on 1' off gear6, 1' on3' off gear7) + 3(x1' on 4' off gear8)",
+    "tags": [
+      "Technical paddling"
+    ],
+    "spreadsheet_path": null,
+    "tabata_path": null
+  }
+]

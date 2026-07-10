@@ -1,0 +1,16 @@
+# Windows thumbnail cache
+desktop.ini
+thumbs.db
+
+# Office / Excel temporary files
+~$*
+
+# Python cache / virtual envs
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+venv/
+.venv/
+env/
+.env
