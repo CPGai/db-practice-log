@@ -836,6 +836,28 @@
       background: rgba(255, 255, 255, 0.05);
       transform: rotate(180deg);
     }
+
+    /* Column resizer drag handle styling */
+    .summary-table th {
+      position: relative;
+    }
+
+    .resizer {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 8px;
+      height: 100%;
+      cursor: col-resize;
+      user-select: none;
+      z-index: 10;
+      border-right: 2px dashed rgba(255, 255, 255, 0.15);
+      transition: border-color 0.2s;
+    }
+
+    .resizer:hover, .resizer.resizing {
+      border-right: 2px solid var(--accent-purple);
+    }
   </style>
 </head>
 <body>
@@ -1223,11 +1245,11 @@
       table.innerHTML = `
         <thead>
           <tr>
-            <th style="width: 120px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 80px; width: 110px; padding-right: 8px;">Date</div></th>
-            <th style="width: 170px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 100px; width: 160px; padding-right: 8px;">Title</div></th>
-            <th><div style="resize: horizontal; overflow: auto; display: block; min-width: 250px; width: 100%; padding-right: 8px;">Workout Summary</div></th>
-            <th style="width: 230px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 120px; width: 220px; padding-right: 8px;">Tags</div></th>
-            <th style="width: 190px;"><div style="resize: horizontal; overflow: auto; display: block; min-width: 120px; width: 180px; padding-right: 8px;">Associated Files</div></th>
+            <th style="width: 110px;">Date</th>
+            <th style="width: 160px;">Title</th>
+            <th>Workout Summary</th>
+            <th style="width: 220px;">Tags</th>
+            <th style="width: 180px;">Associated Files</th>
           </tr>
         </thead>
         <tbody>
@@ -1280,6 +1302,8 @@
       
       tableWrapper.appendChild(table);
       container.appendChild(tableWrapper);
+      
+      makeColumnsResizable(table);
     }
 
     // View Switcher Handlers
@@ -1511,6 +1535,41 @@
           const title = btn.getAttribute('data-title');
           openEditModal(date, title);
         });
+      });
+    }
+
+    function makeColumnsResizable(table) {
+      const cols = table.querySelectorAll('th');
+      cols.forEach(col => {
+        if (col.querySelector('.resizer')) return;
+        
+        const resizer = document.createElement('div');
+        resizer.className = 'resizer';
+        col.appendChild(resizer);
+        
+        resizer.addEventListener('mousedown', initResize);
+        
+        function initResize(e) {
+          e.preventDefault();
+          const startX = e.clientX;
+          const startWidth = col.offsetWidth;
+          
+          resizer.classList.add('resizing');
+          
+          function doResize(moveEvent) {
+            const width = startWidth + (moveEvent.clientX - startX);
+            col.style.width = `${width}px`;
+          }
+          
+          function stopResize() {
+            resizer.classList.remove('resizing');
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+          }
+          
+          document.addEventListener('mousemove', doResize);
+          document.addEventListener('mouseup', stopResize);
+        }
       });
     }
 
