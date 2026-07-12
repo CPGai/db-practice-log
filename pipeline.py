@@ -5,6 +5,7 @@ import json
 import random
 import datetime
 import openpyxl
+import http.server
 
 def clean_str(val):
     if val is None:
@@ -36,9 +37,13 @@ def parse_xlsx(filepath):
     wb = openpyxl.load_workbook(filepath, data_only=True)
     plan_sheets = [name for name in wb.sheetnames if name.lower().startswith("plan")]
     if not plan_sheets:
-        return []
+        if len(wb.sheetnames) > 0:
+            sheetname = wb.sheetnames[0]
+        else:
+            return []
+    else:
+        sheetname = plan_sheets[0]
     
-    sheetname = plan_sheets[0]
     sheet = wb[sheetname]
     
     practices = []
@@ -53,7 +58,7 @@ def parse_xlsx(filepath):
         col7 = sheet.cell(r, 7).value
         
         c1_str = clean_str(col1)
-        is_header = c1_str.startswith("Practice:") or c1_str.startswith("Practice Plan")
+        is_header = c1_str.startswith("Practice Plan") or (c1_str.startswith("Practice") and ":" in c1_str)
         
         if is_header:
             should_merge = (
@@ -87,7 +92,7 @@ def parse_xlsx(filepath):
         if current_practice is None:
             continue
             
-        if c1_str.startswith("Practice:"):
+        if c1_str.startswith("Practice:") or (c1_str.startswith("Practice") and ":" in c1_str):
             current_practice["title"] = c1_str
             continue
             
@@ -307,8 +312,8 @@ def infer_heuristics(cycles):
 
 def clean_title(title_cell, plan_header_cell):
     # Remove prefix "Practice Plan X: " or "Practice: "
-    clean_p = re.sub(r'^practice plan\s*\d*:\s*', '', plan_header_cell, flags=re.IGNORECASE)
-    clean_t = re.sub(r'^practice:\s*', '', title_cell, flags=re.IGNORECASE)
+    clean_p = re.sub(r'^practice plan[^:]*:\s*', '', plan_header_cell, flags=re.IGNORECASE)
+    clean_t = re.sub(r'^practice[^:]*:\s*', '', title_cell, flags=re.IGNORECASE)
     return clean_p.strip(), clean_t.strip()
 
 def update_sessions_json(date, title, summary, tags, sheet_rel_path, tabata_rel_path):
@@ -565,9 +570,153 @@ def run_pipeline(manual_file=None, non_interactive=False):
                 except Exception as e:
                     print(f"[Warning] Could not remove loose file {filepath}: {e}")
 
+class DashboardAPIHandler(http.server.SimpleHTTPRequestHandler):
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
+
+    def do_POST(self):
+        if self.path == '/api/sessions/edit':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            try:
+                params = json.loads(post_data.decode('utf-8'))
+                original_date = params.get('original_date')
+                original_title = params.get('original_title')
+                new_date = params.get('date')
+                new_title = params.get('title')
+                new_summary = params.get('summary')
+                new_tags = params.get('tags', [])
+                
+                log_path = "sessions.json"
+                data = []
+                if os.path.exists(log_path):
+                    with open(log_path, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                
+                updated = False
+                for item in data:
+                    if item.get("date") == original_date and item.get("title") == original_title:
+                        item["date"] = new_date
+                        item["title"] = new_title
+                        item["summary"] = new_summary
+                        item["tags"] = new_tags
+                        updated = True
+                        break
+                
+                if updated:
+                    def get_sort_key(item):
+                        date_str = item.get("date", "")
+                        try:
+                            return datetime.datetime.strptime(date_str, "%b %d, %Y")
+                        except Exception:
+                            return datetime.datetime.min
+                    data.sort(key=get_sort_key, reverse=True)
+                    
+                    with open(log_path, "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=2, ensure_ascii=False)
+                    
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": "success"}).encode('utf-8'))
+                else:
+                    self.send_response(404)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Access-Control-Allow-Origin', '*')
+                    self.end_headers()
+                    self.wfile.write(json.dumps({"status": "error", "message": "Session not found"}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+                
+        elif self.path == '/api/run-pipeline':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            try:
+                params = json.loads(post_data.decode('utf-8'))
+                cmd_type = params.get('type')
+                
+                if cmd_type == 'standard':
+                    cmd = 'python pipeline.py'
+                elif cmd_type == 'log-only':
+                    cmd = 'python pipeline.py --log-only'
+                elif cmd_type == 'yes':
+                    cmd = 'python pipeline.py --yes'
+                else:
+                    raise ValueError(f"Unknown command type: {cmd_type}")
+                
+                import subprocess
+                subprocess.Popen(
+                    ["powershell.exe", "-NoExit", "-Command", cmd],
+                    creationflags=subprocess.CREATE_NEW_CONSOLE,
+                    cwd=os.getcwd()
+                )
+                
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "success", "command": cmd}).encode('utf-8'))
+            except Exception as e:
+                self.send_response(500)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"status": "error", "message": str(e)}).encode('utf-8'))
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+def start_server():
+    import http.server
+    import webbrowser
+    
+    port = 8000
+    server = None
+    while port < 8010:
+        try:
+            handler = DashboardAPIHandler
+            server = http.server.HTTPServer(("127.0.0.1", port), handler)
+            break
+        except OSError:
+            print(f"[Server] Port {port} is busy. Trying next port...")
+            port += 1
+            
+    if not server:
+        print("[Error] Could not find a free port between 8000 and 8010.")
+        sys.exit(1)
+        
+    print(f"\n=======================================================")
+    print(f"Dragon Boat Dashboard Server Running at:")
+    print(f"http://localhost:{port}")
+    print(f"=======================================================\n")
+    
+    try:
+        webbrowser.open(f"http://localhost:{port}")
+    except Exception as e:
+        print(f"[Warning] Could not open browser automatically: {e}")
+        
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[Server] Shutting down server...")
+        server.server_close()
+        sys.exit(0)
+
 if __name__ == "__main__":
+    import http.server
     if len(sys.argv) > 1:
-        if "--log-only" in sys.argv or "/log-PP-only" in sys.argv:
+        if "--server" in sys.argv:
+            start_server()
+        elif "--log-only" in sys.argv or "/log-PP-only" in sys.argv:
             log_pp_only_mode()
         else:
             non_int = "--yes" in sys.argv or "-y" in sys.argv

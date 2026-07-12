@@ -15,13 +15,10 @@
   {
     "date": "Jul 06, 2026",
     "title": "The Over-Under",
-    "summary": "7' @ G4 + 3' Rest + 7' Starts Drill + 3' Rest + 6 sets of [3' @ G6 + 1' @ G7 + 1' @ G5 + 4' 30\" Rest] + 0' 4\" Rest + 8 sets of [0' 20\" @ G10 + 0' 10\" Rest] + 10' Rest + 5' @ G0",
+    "summary": "6 sets of [3' @ G6 + 1' @ G7 + 1' @ G5 + 4' 30\" Rest] \n 8 sets of [0' 20\" @ G10 + 0' 10\" Rest]  - Tabata",
     "tags": [
       "HIT",
-      "Race Ready",
-      "Endurance",
-      "Technical paddling",
-      "Recovery"
+      "Endurance"
     ],
     "spreadsheet_path": "01-Calculators_Sheets/Jul 06, 2026 - The Over-Under.xlsx",
     "tabata_path": "02-App_Timers_JSON/Jul 06, 2026 - The Over-Under.tabata"
@@ -48,6 +45,16 @@
     ],
     "spreadsheet_path": "01-Calculators_Sheets/Jul 06, 2026 - Alternate Long Paddle G4.xlsx",
     "tabata_path": null
+  },
+  {
+    "date": "May 13, 2026",
+    "title": "Milton - Race Prep.",
+    "summary": "- 6 sets of [ 30\" 2xf4, 2xf8,2x16 + 2' Rest]-Starts \n- 4 sets of [2' 30\" @ G3 + 4' Rest]  (500m)\n- 2' @ G7 + 6' Rest   (500m)\n- 3 sets of  [1' @ G4 + 3' Rest]  (200m)\n- 1' @ G8 + 4' Rest  (200m)",
+    "tags": [
+      "Race Ready"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/May 13, 2026 - Milton - Race Prep..xlsx",
+    "tabata_path": "02-App_Timers_JSON/May 13, 2026 - Milton - Race Prep..tabata"
   },
   {
     "date": "Mar 02, 2026",
@@ -98,6 +105,17 @@
       "Recovery"
     ],
     "spreadsheet_path": "01-Calculators_Sheets/Mar 02, 2026 - The Wrond side-Exit.xlsx",
+    "tabata_path": null
+  },
+  {
+    "date": "Feb 23, 2026",
+    "title": "Aerobic Catch",
+    "summary": "+ Cycle1:  3x (4'@G5-2k/ 2'R) + Cycle2:  4x (1'@G5/30\"R + 1'@G6/60\"R +1'@G7/2'R) \n+ Cycle3:  1' 200m Race",
+    "tags": [
+      "Endurance",
+      "Technical paddling"
+    ],
+    "spreadsheet_path": "01-Calculators_Sheets/Feb 23, 2026- Aerobic Catch.xlsx",
     "tabata_path": null
   },
   {
